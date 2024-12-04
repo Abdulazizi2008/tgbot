@@ -3,9 +3,9 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 # Этапы для ConversationHandler
 (
-    BROKER_NAME, MC, TYPE, LOAD, PU, PU_ADDRESS, PU_TIME, 
-    DEL, DEL_ADDRESS, DEL_TIME, RATE, DEADHEAD, DISTANCE, TOTAL_DISTANCE, RESULT
-) = range(15) 
+    BROKER_NAME, MC, TYPE, LOAD, PU, PU_TIME, 
+    DEL, DEL_TIME, RATE, DEADHEAD, DISTANCE, TOTAL_DISTANCE, RESULT
+) = range(13) 
 
 # Начало работы
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -39,30 +39,22 @@ async def ask_load(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def ask_pu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['load'] = update.message.text.upper()
     await update.message.reply_text("Enter the PU:")
-    return PU_ADDRESS
-
-async def ask_pu_address(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data['pu'] = update.message.text.upper()
-    await update.message.reply_text("Enter the PU address:")
     return PU_TIME
 
+
 async def ask_pu_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data['pu_address'] = update.message.text.upper()
+    context.user_data['pu'] = update.message.text.upper()
     await update.message.reply_text("Enter a PU time:")
     return DEL
 
 async def ask_del(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['pu_time'] = update.message.text.upper()
     await update.message.reply_text("Enter DEL:")
-    return DEL_ADDRESS
-
-async def ask_del_address(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data['del'] = update.message.text.upper()
-    await update.message.reply_text("Enter DEL address:")
     return DEL_TIME
 
+
 async def ask_del_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data['del_address'] = update.message.text.upper()
+    context.user_data['del'] = update.message.text.upper()
     await update.message.reply_text("Enter DEL time:")
     return RATE
 
@@ -84,7 +76,7 @@ async def ask_distance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 async def ask_total_distance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['distance'] = update.message.text.upper()
     await update.message.reply_text("Enter Total Distance:")
-    return RESULT  # Используем новое состояние RESULT
+    return RESULT  
 
 async def result_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['total_distance'] = update.message.text.upper()  # Сохраняем Total Distance
@@ -101,11 +93,11 @@ TYPE: {data['type']}
 ___________________________________
 
 ↗️PU: {data['pu']}
-{data['pu_address']}
+
 🕰 {data['pu_time']}
 
 ➡️DEL: {data['del']}
-{data['del_address']}
+
 🕰 {data['del_time']}
 ___________________________________
 
@@ -145,10 +137,8 @@ def main() -> None:
         TYPE: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_type)],
         LOAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_load)],
         PU: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_pu)],
-        PU_ADDRESS: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_pu_address)],
         PU_TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_pu_time)],
         DEL: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_del)],
-        DEL_ADDRESS: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_del_address)],
         DEL_TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_del_time)],
         RATE: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_rate)],
         DEADHEAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_deadhead)],
